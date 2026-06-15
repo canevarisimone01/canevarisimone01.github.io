@@ -28,8 +28,8 @@ window.MODEVARI_CONFIG = {
        automatically in app.js so you never have to update it in January. */
     foundedYear: 2024,
 
-    /* Your public links. REPLACE the placeholder org name with your real one. */
-    githubOrg: "https://github.com/modevari",   // <-- REPLACE with your GitHub org/user URL
+    /* Your public links. */
+    githubOrg: "https://github.com/canevarisimone01",   // your GitHub account
     contactEmail: "hello@modevari.dev",          // <-- REPLACE (or remove from footer)
   },
 

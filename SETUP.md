@@ -12,6 +12,11 @@ data files:
 
 Everything else (`index.html`, `style.css`, `app.js`) you can usually leave alone.
 
+> **Publishing a tool/app?** See **[PUBLISHING.md](PUBLISHING.md)** — a reusable,
+> placeholder-based, step-by-step guide for putting a build on GitHub Releases and
+> wiring its Download button into the site (sections §2–§4 below cover the same
+> ground in less detail).
+
 ---
 
 ## 0. The files at a glance
