@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="theme-color" content="#0b0f1a" />
+  <meta name="description"
+        content="Modevari — a two-person indie studio crafting digital tools and companion apps for tabletop RPGs: a modular D&D 5e companion, a hexcrawl map tool, and a solo cartographer." />
+
+  <!-- Title is updated per route/language by app.js; this is the no-JS fallback. -->
+  <title>Modevari — Digital tools for tabletop adventurers</title>
+
+  <!-- ====================================================================
+       FONTS — Google Fonts (Cinzel display · DM Sans body · Spectral italic)
+       OFFLINE FALLBACK: if the CDN is unreachable, the stack falls back to
+       the system serif/sans defined in style.css (var(--font-display) etc.).
+       To work fully offline, download these families into a /fonts folder and
+       replace this <link> with local @font-face rules in style.css.
+       =================================================================== -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=DM+Sans:wght@400;500;700&family=Spectral:ital,wght@0,500;1,400&display=swap" />
+
+  <!-- Site styles -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- ====================================================================
+       SCRIPTS — load order matters and is guaranteed by `defer` (runs in
+       document order, before DOMContentLoaded):
+         1. config.js        (window.MODEVARI_CONFIG)
+         2. translations.js  (window.MODEVARI_I18N)
+         3. app.js           (registers Alpine stores + the `app` component)
+         4. Alpine.js        (boots, fires alpine:init -> app.js wires up)
+         5. Lucide icons     (renders the few <i data-lucide> chrome icons)
+       OFFLINE FALLBACK: Alpine + Lucide are loaded from a CDN. For guaranteed
+       offline use, download both files next to this page and point the src at
+       the local copies. The site degrades gracefully if Lucide is missing
+       (app.js guards for it); Alpine is required for interactivity.
+       =================================================================== -->
+  <script defer src="config.js"></script>
+  <script defer src="translations.js"></script>
+  <script defer src="app.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+  <script defer src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
+</head>
+
+<body>
+  <!-- Skip link: focuses main content without changing the hash route. -->
+  <a class="skip-link" href="#maincontent"
+     x-data
+     @click.prevent="$refs && document.getElementById('maincontent').focus()">
+    <span x-text="$store.i18n ? $store.i18n.t('skip_link') : 'Skip to main content'">Skip to main content</span>
+  </a>
+
+  <!-- ======================================================================
+       INLINE SVG SPRITE
+       Defined once, referenced everywhere via <use href="#id">. All shapes use
+       currentColor so they inherit the surrounding text/accent colour. This is
+       how the project artwork is reused on both the home cards and the detail
+       headers without duplicating markup or shipping image files.
+       ===================================================================== -->
+  <svg class="svg-sprite" width="0" height="0" aria-hidden="true" focusable="false"
+       style="position:absolute;width:0;height:0;overflow:hidden">
+
+    <!-- Brand glyph: a d20 (twenty-sided die) -->
+    <symbol id="glyph-d20" viewBox="0 0 24 24">
+      <g fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round">
+        <polygon points="12 2.5 20.5 7.2 20.5 16.8 12 21.5 3.5 16.8 3.5 7.2" />
+        <polygon points="12 6 17 14.5 7 14.5" />
+        <path d="M12 2.5V6M20.5 7.2 17 14.5M3.5 7.2 7 14.5M7 14.5 12 21.5M17 14.5 12 21.5" />
+      </g>
+    </symbol>
+
+    <!-- UI icons (used inside Alpine-reactive contexts, so kept as sprite) -->
+    <symbol id="i-menu" viewBox="0 0 24 24">
+      <path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+    </symbol>
+    <symbol id="i-close" viewBox="0 0 24 24">
+      <path d="M6 6l12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+    </symbol>
+    <symbol id="i-chevron-down" viewBox="0 0 24 24">
+      <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </symbol>
+    <symbol id="i-arrow-left" viewBox="0 0 24 24">
+      <path d="M19 12H5M11 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </symbol>
+    <symbol id="i-arrow-right" viewBox="0 0 24 24">
+      <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24">
+      <path d="M20 6 9 17l-5-5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+    </symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24">
+      <path d="M12 3l1.7 5.1a3 3 0 0 0 2.2 2.2L21 12l-5.1 1.7a3 3 0 0 0-2.2 2.2L12 21l-1.7-5.1a3 3 0 0 0-2.2-2.2L3 12l5.1-1.7a3 3 0 0 0 2.2-2.2z" fill="currentColor" />
+    </symbol>
+    <symbol id="i-download" viewBox="0 0 24 24">
+      <path d="M12 3v12M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </symbol>
+    <symbol id="i-image" viewBox="0 0 24 24">
+      <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="4" width="18" height="16" rx="2" />
+        <circle cx="8.5" cy="9.5" r="1.5" />
+        <path d="M21 16l-5-5-7 7" />
+      </g>
+    </symbol>
+
+    <!-- Project artwork: open spellbook -->
+    <symbol id="art-spellbook" viewBox="0 0 96 96">
+      <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M48 30c-7-5-19-7-30-4v44c11-3 23-1 30 4z" />
+        <path d="M48 30c7-5 19-7 30-4v44c-11-3-23-1-30 4z" />
+        <line x1="48" y1="30" x2="48" y2="74" />
+        <path d="M25 42c4-1 9-1 14 1M25 51c4-1 9-1 14 1" />
+        <path d="M57 43c4-1 9-1 14 1M57 52c4-1 9-1 14 1" />
+      </g>
+      <path d="M67 19l1.2 3.6a2 2 0 0 0 1.5 1.5L73 25l-3.3 1.2a2 2 0 0 0-1.5 1.5L67 31l-1.2-3.3a2 2 0 0 0-1.5-1.5L61 25l3.3-1.2a2 2 0 0 0 1.5-1.5z" fill="currentColor" />
+    </symbol>
+
+    <!-- Project artwork: hex map with a route + waypoints -->
+    <symbol id="art-hexmap" viewBox="0 0 96 96">
+      <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="48 14 80 31 80 65 48 82 16 65 16 31" />
+        <path d="M30 62c10-4 8-20 18-20 8 0 8 9 18 5" stroke-dasharray="1.5 7" />
+      </g>
+      <circle cx="30" cy="62" r="3.5" fill="currentColor" />
+      <circle cx="66" cy="47" r="3.5" fill="currentColor" />
+      <path d="M48 34a7 7 0 0 1 7 7c0 5-7 11-7 11s-7-6-7-11a7 7 0 0 1 7-7z" fill="currentColor" />
+      <circle cx="48" cy="41" r="2.4" fill="#0b0f1a" />
+    </symbol>
+
+    <!-- Project artwork: compass rose -->
+    <symbol id="art-compass" viewBox="0 0 96 96">
+      <g fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="48" cy="48" r="33" />
+        <circle cx="48" cy="48" r="25" opacity="0.6" />
+      </g>
+      <polygon points="48 17 52.5 48 48 50 43.5 48" fill="currentColor" />
+      <polygon points="48 79 43.5 48 48 46 52.5 48" fill="currentColor" opacity="0.5" />
+      <polygon points="17 48 48 43.5 50 48 48 52.5" fill="currentColor" opacity="0.5" />
+      <polygon points="79 48 48 52.5 46 48 48 43.5" fill="currentColor" opacity="0.5" />
+      <circle cx="48" cy="48" r="3.5" fill="currentColor" />
+    </symbol>
+
+    <!-- Decorative crest: crossed sword + quill in a ring -->
+    <symbol id="deco-crest" viewBox="0 0 120 120">
+      <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="60" cy="60" r="49" stroke-width="2" opacity="0.4" />
+        <circle cx="60" cy="60" r="41" stroke-width="1" stroke-dasharray="2 7" opacity="0.55" />
+        <!-- Sword: lower-left to upper-right -->
+        <g stroke-width="2.6">
+          <line x1="40" y1="80" x2="82" y2="38" />
+          <path d="M82 38l3-7-7 3" />
+          <line x1="33" y1="73" x2="47" y2="87" />
+          <line x1="37" y1="83" x2="30" y2="90" />
+          <circle cx="27" cy="93" r="3" />
+        </g>
+        <!-- Quill: lower-right to upper-left -->
+        <g stroke-width="2.6">
+          <path d="M82 86C66 80 50 64 42 44" />
+          <path d="M42 44c-6 1-10 6-11 14M50 52c-5 1-8 5-9 12M58 60c-4 1-7 4-8 10" />
+          <path d="M42 44c1-6 6-10 14-11M50 52c1-5 5-8 12-9M58 60c1-4 4-7 10-8" />
+          <path d="M82 86l5 5" />
+        </g>
+      </g>
+    </symbol>
+
+    <!-- Team portrait placeholder silhouette -->
+    <symbol id="art-portrait" viewBox="0 0 64 64">
+      <g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="32" cy="25" r="11" />
+        <path d="M13 53c2-11 9-16 19-16s17 5 19 16" />
+        <path d="M21 19c2-8 20-8 22 0" opacity="0.6" />
+      </g>
+    </symbol>
+  </svg>
+
+  <!-- ======================================================================
+       APP ROOT — `app` component is defined in app.js (Alpine.data('app')).
+       x-cloak hides everything until Alpine is ready (prevents a flash of
+       untranslated keys). Removed automatically once Alpine initialises.
+       ===================================================================== -->
+  <div id="app" x-data="app" x-cloak>
+
+    <!-- =================== HEADER / NAVIGATION ========================== -->
+    <header class="site-header">
+      <div class="site-header__inner">
+
+        <!-- Brand / wordmark -->
+        <a class="brand" href="#home" :aria-label="t('home_link_label')"
+           @click="mobileOpen=false; projectsOpen=false">
+          <svg class="brand__glyph" aria-hidden="true" focusable="false"><use href="#glyph-d20" /></svg>
+          <span class="brand__word">Modevari</span>
+        </a>
+
+        <!-- Desktop navigation -->
+        <nav class="nav nav--desktop" aria-label="Primary">
+          <a class="nav__link" href="#home"
+             :class="{ 'is-active': $store.router.is('home') }"
+             x-text="t('nav_home')">Home</a>
+
+          <!-- Projects dropdown -->
+          <div class="nav__dropdown" @click.outside="projectsOpen=false"
+               @keydown.escape="projectsOpen=false">
+            <button type="button" class="nav__link nav__link--button"
+                    :class="{ 'is-active': $store.router.is('projects') }"
+                    @click="projectsOpen=!projectsOpen"
+                    :aria-expanded="projectsOpen.toString()" aria-haspopup="true">
+              <span x-text="t('nav_projects')">Projects</span>
+              <span class="nav__chev" :class="{ 'is-open': projectsOpen }" aria-hidden="true">
+                <svg class="icon icon--sm"><use href="#i-chevron-down" /></svg>
+              </span>
+            </button>
+
+            <div class="dropdown" role="menu" x-show="projectsOpen" x-cloak
+                 x-transition
+                 @keydown.escape="projectsOpen=false">
+              <template x-for="proj in projects" :key="proj.slug">
+                <a class="dropdown__item" role="menuitem"
+                   :href="'#projects/' + proj.slug"
+                   @click="projectsOpen=false"
+                   :style="{ '--accent': proj.accent }">
+                  <svg class="dropdown__icon" aria-hidden="true"><use :href="'#art-' + proj.icon" /></svg>
+                  <span>
+                    <span class="dropdown__name" x-text="t('proj_' + proj.i18nKey + '_name')"></span>
+                    <span class="dropdown__tag" x-text="t('proj_' + proj.i18nKey + '_tagline')"></span>
+                  </span>
+                </a>
+              </template>
+            </div>
+          </div>
+
+          <a class="nav__link" href="#about"
+             :class="{ 'is-active': $store.router.is('about') }"
+             x-text="t('nav_about')">About</a>
+        </nav>
+
+        <!-- Language switch -->
+        <div class="langswitch" role="group" :aria-label="t('lang_toggle_label')">
+          <template x-for="(code, idx) in $store.i18n.languages" :key="code">
+            <span class="langswitch__cell">
+              <span class="langswitch__sep" x-show="idx>0" aria-hidden="true">|</span>
+              <button type="button" class="langswitch__btn"
+                      :class="{ 'is-active': $store.i18n.lang === code }"
+                      :aria-pressed="($store.i18n.lang === code).toString()"
+                      @click="$store.i18n.set(code)"
+                      x-text="code.toUpperCase()"></button>
+            </span>
+          </template>
+        </div>
+
+        <!-- Mobile hamburger -->
+        <button type="button" class="hamburger" @click="mobileOpen=!mobileOpen"
+                :aria-expanded="mobileOpen.toString()"
+                :aria-label="mobileOpen ? t('menu_close') : t('menu_open')">
+          <svg class="icon" x-show="!mobileOpen"><use href="#i-menu" /></svg>
+          <svg class="icon" x-show="mobileOpen" x-cloak><use href="#i-close" /></svg>
+        </button>
+      </div>
+
+      <!-- Mobile drawer -->
+      <div class="drawer" x-show="mobileOpen" x-cloak x-transition
+           @keydown.escape="mobileOpen=false">
+        <nav class="drawer__nav" aria-label="Mobile">
+          <a class="drawer__link" href="#home" @click="mobileOpen=false"
+             :class="{ 'is-active': $store.router.is('home') }" x-text="t('nav_home')">Home</a>
+          <a class="drawer__link" href="#about" @click="mobileOpen=false"
+             :class="{ 'is-active': $store.router.is('about') }" x-text="t('nav_about')">About</a>
+
+          <p class="drawer__heading" x-text="t('nav_projects')">Projects</p>
+          <template x-for="proj in projects" :key="proj.slug">
+            <a class="drawer__link drawer__link--sub" :href="'#projects/' + proj.slug"
+               @click="mobileOpen=false" :style="{ '--accent': proj.accent }">
+              <svg class="drawer__icon" aria-hidden="true"><use :href="'#art-' + proj.icon" /></svg>
+              <span x-text="t('proj_' + proj.i18nKey + '_name')"></span>
+            </a>
+          </template>
+        </nav>
+      </div>
+    </header>
+
+    <!-- =========================== MAIN ================================= -->
+    <main id="maincontent" tabindex="-1" x-ref="main">
+
+      <!-- ////////////////////////// HOME ////////////////////////////// -->
+      <div x-show="$store.router.is('home')" x-cloak>
+
+        <!-- Hero -->
+        <section class="hero" aria-labelledby="hero-title">
+          <div class="hero__bg" aria-hidden="true"></div>
+          <div class="hero__inner">
+            <p class="hero__eyebrow" x-text="t('hero_eyebrow')"></p>
+            <h1 class="hero__title" id="hero-title" x-text="t('hero_title')">Modevari</h1>
+            <p class="hero__subtitle" x-text="t('hero_subtitle')"></p>
+            <p class="hero__lead" x-text="t('hero_paragraph')"></p>
+            <div class="hero__actions">
+              <button type="button" class="btn btn--primary" @click="scrollTo('projects')">
+                <span x-text="t('hero_cta')"></span>
+                <svg class="icon icon--sm"><use href="#i-arrow-right" /></svg>
+              </button>
+              <a class="btn btn--ghost" href="#about" x-text="t('hero_cta_about')"></a>
+            </div>
+          </div>
+          <a class="hero__scroll" href="#home" @click.prevent="scrollTo('projects')" aria-hidden="true" tabindex="-1">
+            <i data-lucide="arrow-down"></i>
+          </a>
+        </section>
+
+        <!-- Projects grid -->
+        <section class="section projects" id="projects" aria-labelledby="projects-title">
+          <div class="section__head">
+            <span class="section__eyebrow"><svg class="icon icon--sm"><use href="#i-sparkle" /></svg></span>
+            <h2 class="section__title" id="projects-title" x-text="t('projects_title')">Our Projects</h2>
+            <p class="section__subtitle" x-text="t('projects_subtitle')"></p>
+          </div>
+
+          <div class="projects__grid">
+            <template x-for="proj in projects" :key="proj.slug">
+              <article class="card project-card" :style="{ '--accent': proj.accent, '--accent-soft': proj.accentSoft }">
+                <div class="project-card__top">
+                  <div class="project-card__art">
+                    <svg class="project-card__icon" aria-hidden="true"><use :href="'#art-' + proj.icon" /></svg>
+                  </div>
+                  <span class="badge badge--beta" x-show="proj.status === 'beta'">
+                    <svg class="icon icon--xs"><use href="#i-sparkle" /></svg>
+                    <span x-text="t('badge_beta')"></span>
+                  </span>
+                </div>
+                <h3 class="project-card__name" x-text="t('proj_' + proj.i18nKey + '_name')"></h3>
+                <p class="project-card__tagline" x-text="t('proj_' + proj.i18nKey + '_tagline')"></p>
+                <p class="project-card__desc" x-text="t('proj_' + proj.i18nKey + '_short')"></p>
+                <a class="btn btn--card" :href="'#projects/' + proj.slug">
+                  <span x-text="t('card_learn_more')"></span>
+                  <svg class="icon icon--sm"><use href="#i-arrow-right" /></svg>
+                </a>
+              </article>
+            </template>
+          </div>
+        </section>
+
+        <!-- About teaser -->
+        <section class="section about-teaser" aria-labelledby="about-teaser-title">
+          <div class="about-teaser__grid">
+            <div class="about-teaser__text">
+              <p class="section__eyebrow-text" x-text="t('about_teaser_eyebrow')"></p>
+              <h2 class="section__title" id="about-teaser-title" x-text="t('about_teaser_title')"></h2>
+              <p class="about-teaser__body" x-text="t('about_teaser_text')"></p>
+              <a class="link-arrow" href="#about">
+                <span x-text="t('about_teaser_link')"></span>
+                <svg class="icon icon--sm"><use href="#i-arrow-right" /></svg>
+              </a>
+            </div>
+            <div class="about-teaser__deco" aria-hidden="true">
+              <svg class="crest"><use href="#deco-crest" /></svg>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ////////////////////////// ABOUT ///////////////////////////// -->
+      <div x-show="$store.router.is('about')" x-cloak>
+        <section class="section page" aria-labelledby="about-title">
+          <div class="page__head">
+            <h1 class="page__title" id="about-title" x-text="t('about_title')">About Modevari</h1>
+            <p class="page__lede" x-text="t('about_lede')"></p>
+          </div>
+
+          <div class="prose">
+            <template x-for="(para, i) in tl('about_body')" :key="i">
+              <p x-text="para"></p>
+            </template>
+          </div>
+
+          <div class="divider" role="presentation">
+            <span class="divider__line"></span>
+            <svg class="divider__glyph" aria-hidden="true"><use href="#glyph-d20" /></svg>
+            <span class="divider__line"></span>
+          </div>
+
+          <h2 class="section__title section__title--left" x-text="t('about_philosophy_title')"></h2>
+          <ul class="philosophy">
+            <template x-for="(item, i) in tl('about_philosophy')" :key="i">
+              <li class="philosophy__item">
+                <svg class="philosophy__check" aria-hidden="true"><use href="#i-check" /></svg>
+                <span x-text="item"></span>
+              </li>
+            </template>
+          </ul>
+
+          <div class="divider" role="presentation">
+            <span class="divider__line"></span>
+            <svg class="divider__glyph" aria-hidden="true"><use href="#glyph-d20" /></svg>
+            <span class="divider__line"></span>
+          </div>
+
+          <div class="section__head">
+            <h2 class="section__title" x-text="t('team_title')">Meet the team</h2>
+            <p class="section__subtitle" x-text="t('team_subtitle')"></p>
+          </div>
+
+          <!-- Team cards: edit names/roles/bios in translations.js (team_m1_*, team_m2_*) -->
+          <div class="team">
+            <article class="card team-card">
+              <div class="avatar" aria-hidden="true"><svg class="avatar__svg"><use href="#art-portrait" /></svg></div>
+              <h3 class="team-card__name" x-text="t('team_m1_name')"></h3>
+              <p class="team-card__role" x-text="t('team_m1_role')"></p>
+              <p class="team-card__bio" x-text="t('team_m1_bio')"></p>
+            </article>
+            <article class="card team-card">
+              <div class="avatar avatar--alt" aria-hidden="true"><svg class="avatar__svg"><use href="#art-portrait" /></svg></div>
+              <h3 class="team-card__name" x-text="t('team_m2_name')"></h3>
+              <p class="team-card__role" x-text="t('team_m2_role')"></p>
+              <p class="team-card__bio" x-text="t('team_m2_bio')"></p>
+            </article>
+          </div>
+        </section>
+      </div>
+
+      <!-- /////////////////////// PROJECT DETAIL //////////////////////// -->
+      <div x-show="$store.router.is('projects')" x-cloak>
+
+        <!-- Valid project: one shared template, content driven by config + i18n -->
+        <template x-if="$store.router.isProject()">
+          <section class="project-detail"
+                   x-data="{ get p(){ return $store.router.project(); }, get key(){ return this.p ? this.p.i18nKey : ''; } }"
+                   :style="{ '--proj-accent': p.accent, '--proj-accent-soft': p.accentSoft }"
+                   aria-labelledby="detail-title">
+
+            <a class="link-arrow link-arrow--back" href="#home" @click.prevent="backToProjects()">
+              <svg class="icon icon--sm"><use href="#i-arrow-left" /></svg>
+              <span x-text="t('back_to_projects')"></span>
+            </a>
+
+            <!-- Hero banner -->
+            <div class="detail-hero">
+              <div class="detail-hero__bg" aria-hidden="true"></div>
+              <div class="detail-hero__art" aria-hidden="true">
+                <svg class="detail-hero__icon"><use :href="'#art-' + p.icon" /></svg>
+              </div>
+              <div class="detail-hero__text">
+                <span class="badge badge--beta" x-show="p.status === 'beta'">
+                  <svg class="icon icon--xs"><use href="#i-sparkle" /></svg>
+                  <span x-text="t('badge_beta')"></span>
+                </span>
+                <h1 class="detail-hero__title" id="detail-title" x-text="t('proj_' + key + '_name')"></h1>
+                <p class="detail-hero__tagline" x-text="t('proj_' + key + '_tagline')"></p>
+              </div>
+            </div>
+
+            <!-- Overview -->
+            <div class="detail-block">
+              <h2 class="detail-block__title" x-text="t('detail_overview')"></h2>
+              <div class="prose">
+                <template x-for="(para, i) in tl('proj_' + key + '_desc')" :key="i">
+                  <p x-text="para"></p>
+                </template>
+              </div>
+            </div>
+
+            <!-- Features -->
+            <div class="detail-block">
+              <h2 class="detail-block__title" x-text="t('features_title')"></h2>
+              <ul class="features">
+                <template x-for="(feat, i) in tl('proj_' + key + '_features')" :key="i">
+                  <li class="features__item">
+                    <svg class="features__check" aria-hidden="true"><use href="#i-check" /></svg>
+                    <span x-text="feat"></span>
+                  </li>
+                </template>
+              </ul>
+            </div>
+
+            <!-- Preview / screenshots (3 placeholders — drop real images in later) -->
+            <div class="detail-block">
+              <h2 class="detail-block__title" x-text="t('screenshots_title')"></h2>
+              <div class="shots">
+                <template x-for="n in 3" :key="n">
+                  <figure class="shot">
+                    <!-- REPLACE: put a real <img src="..." alt="..."> here when ready -->
+                    <div class="shot__frame">
+                      <svg class="shot__icon" aria-hidden="true"><use href="#i-image" /></svg>
+                      <figcaption class="shot__caption" x-text="t('screenshots_coming')"></figcaption>
+                    </div>
+                  </figure>
+                </template>
+              </div>
+            </div>
+
+            <!-- Download -->
+            <div class="detail-block download" id="download">
+              <h2 class="detail-block__title" x-text="t('download_title')"></h2>
+
+              <!--
+                Download links are built from config.js:
+                  {githubOrg}/{repo}/releases/latest/download/{platform.file}
+                To wire up real downloads, edit config.js -> site.githubOrg,
+                projects[].repo and projects[].platforms[].file.
+                REPLACE the placeholder GitHub org before going live.
+              -->
+              <div class="download__buttons">
+                <template x-for="plat in p.platforms" :key="plat.name">
+                  <a class="btn btn--download"
+                     :href="config.downloadUrl(p, plat)"
+                     rel="nofollow noopener"
+                     :aria-label="t('download_for') + ' ' + plat.name + ' (' + plat.ext + ')'">
+                    <svg class="icon"><use href="#i-download" /></svg>
+                    <span x-text="t('download_for') + ' ' + plat.name + ' (' + plat.ext + ')'"></span>
+                  </a>
+                </template>
+              </div>
+
+              <p class="download__meta">
+                <span><strong x-text="t('version_label')"></strong>: <span x-text="p.version"></span></span>
+                <span class="download__dot" aria-hidden="true">·</span>
+                <span><strong x-text="t('released_label')"></strong>: <span x-text="formatDate(p.releaseDate)"></span></span>
+                <span class="download__dot" aria-hidden="true">·</span>
+                <a class="link-inline" :href="p.changelogUrl" x-text="t('changelog_link')"></a>
+              </p>
+
+              <p class="download__note" x-text="t('download_note')"></p>
+            </div>
+
+            <a class="link-arrow link-arrow--back" href="#home" @click.prevent="backToProjects()">
+              <svg class="icon icon--sm"><use href="#i-arrow-left" /></svg>
+              <span x-text="t('back_to_projects')"></span>
+            </a>
+          </section>
+        </template>
+
+        <!-- Unknown slug -->
+        <template x-if="!$store.router.isProject()">
+          <section class="section page page--notfound">
+            <h1 class="page__title">404</h1>
+            <p class="page__lede" x-text="t('projects_subtitle')"></p>
+            <a class="btn btn--primary" href="#home" @click="$store.router.go('home')">
+              <svg class="icon icon--sm"><use href="#i-arrow-left" /></svg>
+              <span x-text="t('back_to_projects')"></span>
+            </a>
+          </section>
+        </template>
+      </div>
+    </main>
+
+    <!-- =========================== FOOTER =============================== -->
+    <footer class="site-footer">
+      <div class="site-footer__inner">
+        <div class="site-footer__brand">
+          <a class="brand brand--footer" href="#home" :aria-label="t('home_link_label')">
+            <svg class="brand__glyph" aria-hidden="true" focusable="false"><use href="#glyph-d20" /></svg>
+            <span class="brand__word">Modevari</span>
+          </a>
+          <p class="site-footer__tagline" x-text="t('footer_tagline')"></p>
+        </div>
+
+        <nav class="site-footer__links" aria-label="Footer">
+          <a class="site-footer__link" :href="config.site.githubOrg" target="_blank" rel="noopener">
+            <i data-lucide="github"></i>
+            <span x-text="t('footer_github')"></span>
+          </a>
+          <a class="site-footer__link" :href="'mailto:' + config.site.contactEmail">
+            <i data-lucide="mail"></i>
+            <span x-text="t('footer_email')"></span>
+          </a>
+        </nav>
+      </div>
+      <div class="site-footer__bar">
+        <p>
+          <span>© <span x-text="copyrightYears()"></span> Modevari.</span>
+          <span x-text="t('footer_rights')"></span>
+          <span class="site-footer__made" x-text="t('footer_made')"></span>
+        </p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- No-JS fallback message -->
+  <noscript>
+    <div style="padding:2rem;text-align:center;color:#e7e9f0;background:#0b0f1a;font-family:system-ui,sans-serif">
+      Modevari needs JavaScript enabled to run. Please enable it to explore our tools.
+    </div>
+  </noscript>
+</body>
+</html>
