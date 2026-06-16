@@ -94,16 +94,16 @@ window.MODEVARI_CONFIG = {
     {
       slug: "cartographer",
       i18nKey: "carto",
-      repo: "cartographer",                 // <-- REPLACE with your repo name if different
+      repo: "cartographer-s_tool",
       icon: "compass",
       accent: "#d68a52",                     // rust
       accentSoft: "#e9c79a",                 // parchment / sepia
       status: "beta",
-      version: "v0.1-beta",                  // <-- REPLACE each release
-      releaseDate: "2026-05-01",             // <-- REPLACE each release
-      changelogUrl: "#",                     // <-- REPLACE
+      version: "v0.1-beta",
+      releaseDate: "2026-06-16",
+      changelogUrl: "https://github.com/canevarisimone01/cartographer-s_tool/releases",
       platforms: [
-        { name: "Windows", ext: ".zip", file: "modevari-cartographer-win.zip" } // <-- REPLACE filename
+        { name: "Windows", ext: ".zip", file: "cartographers-companion-win.zip" }
       ]
     }
   ],
