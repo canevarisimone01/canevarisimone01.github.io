@@ -109,12 +109,12 @@ window.MODEVARI_CONFIG = {
         { name: "Android", ext: ".apk", file: "cartographers-companion.apk" }
       ],
       /* Preview images for the detail page (clickable -> open in the lightbox).
-         Put the files in assets/screenshots/cartographer/ with these exact names.
+         Each `src` must match a real file in assets/screenshots/cartographer/.
          Omit this array (or leave it empty) to keep the "coming soon" placeholders. */
       screenshots: [
-        { src: "assets/screenshots/cartographer/screenshot-1.png", alt: "Cartographer Tool screenshot 1" },
-        { src: "assets/screenshots/cartographer/screenshot-2.png", alt: "Cartographer Tool screenshot 2" },
-        { src: "assets/screenshots/cartographer/screenshot-3.png", alt: "Cartographer Tool screenshot 3" }
+        { src: "assets/screenshots/cartographer/large_map.png", alt: "Cartographer Tool — large detailed map" },
+        { src: "assets/screenshots/cartographer/medium_map.png", alt: "Cartographer Tool — medium map" },
+        { src: "assets/screenshots/cartographer/small_map.png", alt: "Cartographer Tool — small map" }
       ]
     }
   ],
