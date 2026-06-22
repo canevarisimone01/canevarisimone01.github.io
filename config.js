@@ -102,8 +102,19 @@ window.MODEVARI_CONFIG = {
       version: "v0.1-beta",
       releaseDate: "2026-06-16",
       changelogUrl: "https://github.com/canevarisimone01/cartographer-s_tool/releases",
+      // Each `file` must EXACTLY match an asset name on the latest GitHub release.
       platforms: [
-        { name: "Windows", ext: ".zip", file: "cartographers-companion-win.zip" }
+        { name: "Windows", ext: ".zip", file: "cartographers-companion-win.zip" },
+        { name: "Linux", ext: ".tar.gz", file: "cartographers-companion-linux.tar.gz" },
+        { name: "Android", ext: ".apk", file: "cartographers-companion.apk" }
+      ],
+      /* Preview images for the detail page (clickable -> open in the lightbox).
+         Put the files in assets/screenshots/cartographer/ with these exact names.
+         Omit this array (or leave it empty) to keep the "coming soon" placeholders. */
+      screenshots: [
+        { src: "assets/screenshots/cartographer/screenshot-1.png", alt: "Cartographer Tool screenshot 1" },
+        { src: "assets/screenshots/cartographer/screenshot-2.png", alt: "Cartographer Tool screenshot 2" },
+        { src: "assets/screenshots/cartographer/screenshot-3.png", alt: "Cartographer Tool screenshot 3" }
       ]
     }
   ],
@@ -128,4 +139,5 @@ Object.freeze(window.MODEVARI_CONFIG.site);
 window.MODEVARI_CONFIG.projects.forEach((p) => {
   Object.freeze(p);
   p.platforms.forEach(Object.freeze);
+  if (p.screenshots) p.screenshots.forEach(Object.freeze);
 });

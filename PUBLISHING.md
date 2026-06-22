@@ -11,6 +11,75 @@ per app, then re-use the short "New version" section for every later update.
 
 ---
 
+## How it's organized — repos, releases & files (read this first)
+
+There are **three nested levels**. Keeping them straight prevents almost every
+mistake people make here:
+
+| Level | How many | Example |
+| --- | --- | --- |
+| **Repository** | **One per app** — created once, lives forever | `cartographer-s_tool` |
+| **Release** | **One per version** — inside that repo | `v0.1-beta`, then `v0.2`, … |
+| **Asset (file)** | **One per platform** — attached to that release | `…-win.zip`, `…-linux.tar.gz`, `….apk` |
+
+```
+Repository            (one per app — e.g. cartographer-s_tool)
+  └── Release          (one per version — e.g. v0.1-beta)
+        ├── Asset      (one file per platform — Windows .zip)
+        ├── Asset      (one file per platform — Linux .tar.gz)
+        └── Asset      (one file per platform — Android .apk)
+```
+
+> **Two things people get wrong — neither is true:**
+> - ❌ A separate repo for each **platform** (Windows / Linux / Android).
+>   → All platforms of one app share **one** repo; they're just different files
+>   attached to the same release.
+> - ❌ A new repo for each **version**.
+>   → New versions are new **Releases** inside the *same* repo. You never make a
+>   second repo for the same app.
+
+So across the whole studio you have **one repo per app** — e.g.
+`cartographer-s_tool`, `dnd-companion`, `hexcrawl` (3 repos total). Separate repos
+exist only because they're *different apps*, not different platforms or versions.
+
+### Worked example — the cartographer's tool (Windows + Linux + Android)
+
+You have three build files for the same app. They all go into **one** repo,
+attached to **one** release:
+
+```
+canevarisimone01/cartographer-s_tool             ← the app's ONE repo
+└── Release  v0.1-beta                            ← this version
+      ├── cartographers-companion-win.zip          → "Download for Windows (.zip)"
+      ├── cartographers-companion-linux.tar.gz     → "Download for Linux (.tar.gz)"
+      └── cartographers-companion.apk              → "Download for Android (.apk)"
+```
+
+When you draft the release on GitHub, drag **all three files** into the
+**"Attach binaries"** box of that single release.
+
+In `config.js` this is exactly the three `platforms[]` entries — one per file —
+all sharing the same `repo`:
+
+```js
+{
+  slug: "cartographer",
+  repo: "cartographer-s_tool",          // the ONE shared repo
+  platforms: [
+    { name: "Windows", ext: ".zip",    file: "cartographers-companion-win.zip" },
+    { name: "Linux",   ext: ".tar.gz", file: "cartographers-companion-linux.tar.gz" },
+    { name: "Android", ext: ".apk",    file: "cartographers-companion.apk" }
+  ]
+}
+```
+
+**Shipping a new version later** (e.g. v0.2): draft a **new release** (tag `v0.2`)
+in the **same** repo, attach the three rebuilt files using the **same filenames**,
+and bump `version` / `releaseDate` in `config.js`. The download buttons keep
+working untouched because they always track `releases/latest`.
+
+---
+
 ## 0. Placeholders used in this guide
 
 Replace these with your real values wherever you see them:

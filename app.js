@@ -131,6 +131,44 @@
         backToProjects: function () {
           pendingScroll = "projects";
           this.$store.router.go("home");
+        },
+
+        /* --- Screenshot lightbox ----------------------------------------- */
+        /* `shots` is the project's screenshots array; `index` is which one was
+           clicked. The overlay markup lives at the app root in index.html. */
+        lightbox: { open: false, shots: [], index: 0 },
+
+        /* The screenshot currently on display (or null when none). */
+        get lightboxCurrent() {
+          return this.lightbox.shots[this.lightbox.index] || null;
+        },
+
+        openLightbox: function (shots, index) {
+          this.lightbox.shots = Array.isArray(shots) ? shots : [];
+          this.lightbox.index = index || 0;
+          this.lightbox.open = true;
+          /* stop the page behind the overlay from scrolling */
+          document.body.style.overflow = "hidden";
+          /* move keyboard focus into the dialog */
+          this.$nextTick(function () {
+            if (this.$refs.lightboxClose) this.$refs.lightboxClose.focus();
+          }.bind(this));
+        },
+
+        closeLightbox: function () {
+          this.lightbox.open = false;
+          document.body.style.overflow = "";
+        },
+
+        lightboxNext: function () {
+          if (!this.lightbox.open || this.lightbox.shots.length < 2) return;
+          this.lightbox.index = (this.lightbox.index + 1) % this.lightbox.shots.length;
+        },
+
+        lightboxPrev: function () {
+          if (!this.lightbox.open || this.lightbox.shots.length < 2) return;
+          var n = this.lightbox.shots.length;
+          this.lightbox.index = (this.lightbox.index - 1 + n) % n;
         }
       };
     });

@@ -480,9 +480,21 @@
               </div>
               <h2 class="detail-block__title" x-text="t('screenshots_title')"></h2>
               <div class="shots">
-                <template x-for="n in 3" :key="n">
+                <!-- Real screenshots (config.js -> project.screenshots): click to open the lightbox -->
+                <template x-for="(shot, i) in (p.screenshots || [])" :key="'shot-' + i">
                   <figure class="shot">
-                    <!-- REPLACE: put a real <img src="..." alt="..."> here when ready -->
+                    <button type="button" class="shot__btn"
+                            @click="openLightbox(p.screenshots, i)"
+                            :aria-label="t('screenshots_view') + ' ' + (i + 1)">
+                      <img class="shot__img" :src="shot.src"
+                           :alt="shot.alt || (t('proj_' + key + '_name') + ' — ' + (i + 1))"
+                           loading="lazy" />
+                    </button>
+                  </figure>
+                </template>
+                <!-- Fallback placeholders when no screenshots are configured yet -->
+                <template x-for="n in ((p.screenshots && p.screenshots.length) ? 0 : 3)" :key="'ph-' + n">
+                  <figure class="shot">
                     <div class="shot__frame">
                       <svg class="shot__icon" aria-hidden="true"><use href="#i-image" /></svg>
                       <figcaption class="shot__caption" x-text="t('screenshots_coming')"></figcaption>
@@ -577,6 +589,42 @@
         </p>
       </div>
     </footer>
+
+    <!-- =================== SCREENSHOT LIGHTBOX ========================== -->
+    <!-- Sits at the app root so it overlays everything. Opened by openLightbox(). -->
+    <div class="lightbox" x-show="lightbox.open" x-cloak x-transition.opacity
+         @click.self="closeLightbox()"
+         @keydown.escape.window="closeLightbox()"
+         @keydown.arrow-right.window="lightboxNext()"
+         @keydown.arrow-left.window="lightboxPrev()"
+         role="dialog" aria-modal="true" :aria-label="t('screenshots_title')">
+
+      <button type="button" class="lightbox__close" x-ref="lightboxClose"
+              @click="closeLightbox()" :aria-label="t('lightbox_close')">
+        <svg class="icon"><use href="#i-close" /></svg>
+      </button>
+
+      <button type="button" class="lightbox__nav lightbox__nav--prev"
+              x-show="lightbox.shots.length > 1" @click="lightboxPrev()"
+              :aria-label="t('lightbox_prev')">
+        <svg class="icon"><use href="#i-arrow-left" /></svg>
+      </button>
+
+      <figure class="lightbox__figure">
+        <img class="lightbox__img"
+             :src="lightboxCurrent ? lightboxCurrent.src : ''"
+             :alt="lightboxCurrent ? (lightboxCurrent.alt || '') : ''" />
+        <figcaption class="lightbox__counter" x-show="lightbox.shots.length > 1">
+          <span x-text="lightbox.index + 1"></span> / <span x-text="lightbox.shots.length"></span>
+        </figcaption>
+      </figure>
+
+      <button type="button" class="lightbox__nav lightbox__nav--next"
+              x-show="lightbox.shots.length > 1" @click="lightboxNext()"
+              :aria-label="t('lightbox_next')">
+        <svg class="icon"><use href="#i-arrow-right" /></svg>
+      </button>
+    </div>
   </div>
 
   <!-- No-JS fallback message -->

@@ -1244,6 +1244,110 @@ strong {
   letter-spacing: 0.04em;
 }
 
+/* Clickable real screenshots (open the lightbox) */
+.shot__btn {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--surface);
+  cursor: pointer;
+  transition: transform var(--t), border-color var(--t), box-shadow var(--t);
+}
+
+.shot__btn:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb, var(--proj-accent) 55%, transparent);
+  box-shadow: var(--shadow-lift);
+}
+
+.shot__img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  display: block;
+}
+
+/* Screenshot lightbox — full-screen dark overlay with a centred image */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1rem, 4vw, 3rem);
+  background: rgba(0, 0, 0, 0.85);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+.lightbox__figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.lightbox__img {
+  max-width: min(1100px, 92vw);
+  max-height: 82vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-lift);
+}
+
+.lightbox__counter {
+  color: var(--ink-muted);
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+}
+
+.lightbox__close,
+.lightbox__nav {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-strong);
+  color: var(--ink);
+  transition: background var(--t), border-color var(--t), color var(--t);
+}
+
+.lightbox__close:hover,
+.lightbox__nav:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--gold);
+  color: var(--gold-bright);
+}
+
+.lightbox__close {
+  top: clamp(0.8rem, 2vw, 1.4rem);
+  right: clamp(0.8rem, 2vw, 1.4rem);
+  width: 2.8rem;
+  height: 2.8rem;
+}
+
+.lightbox__nav {
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3rem;
+  height: 3rem;
+}
+
+.lightbox__nav--prev { left: clamp(0.6rem, 2vw, 1.6rem); }
+.lightbox__nav--next { right: clamp(0.6rem, 2vw, 1.6rem); }
+
 /* Download */
 .download__buttons {
   display: flex;
