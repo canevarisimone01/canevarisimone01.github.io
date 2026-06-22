@@ -473,6 +473,11 @@
 
             <!-- Preview / screenshots (3 placeholders — drop real images in later) -->
             <div class="detail-block">
+              <!-- Video demo: when ready, set src="..." on the <video> and delete the placeholder <p> -->
+              <div class="project-video-demo">
+                <video controls preload="metadata" width="100%" src=""></video>
+                <p class="video-placeholder-label">Video demo coming soon</p>
+              </div>
               <h2 class="detail-block__title" x-text="t('screenshots_title')"></h2>
               <div class="shots">
                 <template x-for="n in 3" :key="n">
