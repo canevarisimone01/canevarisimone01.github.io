@@ -171,18 +171,18 @@ window.MODEVARI_I18N = {
       "A hands-on mapmaking app that brings the D&D 5e Cartographer's Tools to life on desktop and Android tablets.",
     proj_carto_desc: [
       "The Cartographer Tool puts the D&D 5e Cartographer's Tools in your hands. Alongside rolling the check, you take on the craft yourself — charting fantasy worlds by hand on an old parchment canvas, the way your character would.",
-      "Place icons from a deep catalog — settlements, mountains, forests, castles, ports, dragon lairs and more — then paint terrain, sketch freehand with the pencil, link locations with labelled routes, and pin notes wherever your story needs them.",
-      "It's built around the feel of the craft rather than technical realism: not a professional atlas suite, but a focused space to chart a world by hand. A grid, a draggable scale bar and a measure tool let you think like an in-world cartographer — one square at a time — while the parchment background and hand-drawn icons keep everything feeling like a page from an adventurer's journal.",
+      "Place icons from a deep catalog — settlements, mountains, forests, castles, ports, dragon lairs and more — then outline terrain regions, sketch freehand with the pencil, link locations with labelled routes, and pin notes wherever your story needs them.",
+      "It's built around the feel of the craft rather than technical realism: not a professional atlas suite, but a focused space to chart a world by hand. A grid, a draggable scale bar and a measure tool let you think like an in-world cartographer — one square at a time — while the parchment background and inked map icons keep everything feeling like a page from an adventurer's journal.",
       "Pan, zoom and lean on the mini-map to roam a huge canvas, then save your work, export it to PNG, and undo or redo freely as you go. It runs on Windows and Linux as well as Android — at its best on a tablet, where you draw straight onto the map. Currently in beta, with the full toolkit already available."
     ],
     proj_carto_features: [
-      "A big catalog of hand-drawn map icons — settlements, terrain, structures, water and special sites — grouped by category",
-      "Freehand terrain brush with forest, mountain, desert, swamp, water, snow, plains and lava fills",
+      "A large catalog of map icons — settlements, terrain, structures, water and special sites — grouped by category",
+      "Draw closed terrain areas freehand — forest, mountain, desert, swamp, water, snow, plains and lava fills",
       "Pencil free-draw and eraser for sketching anything by hand",
       "Labelled connections between locations, with dashed, dotted or solid line styles",
       "Floating notes on any element, plus labels and renaming",
       "Grid, a configurable scale (1 square = feet, meters, miles, km, leagues or days) and a two-point measure tool",
-      "A huge pannable, zoomable parchment canvas with a mini-map overview — on desktop or by touch on a tablet",
+      "A huge pannable, zoomable parchment canvas with a mini-map overview",
       "Show/hide layers, full undo/redo, autosave, JSON save/load and PNG export"
     ]
   },
