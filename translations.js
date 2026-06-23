@@ -101,7 +101,7 @@ window.MODEVARI_I18N = {
     back_to_projects: "Back to projects",
     detail_overview: "Overview",
     features_title: "Features",
-    screenshots_title: "Preview",
+    screenshots_title: "Map examples",
     screenshots_coming: "Screenshot coming soon",
     screenshots_view: "View screenshot",
     lightbox_close: "Close",
@@ -166,22 +166,24 @@ window.MODEVARI_I18N = {
 
     /* Cartographer Tool */
     proj_carto_name: "Cartographer Tool",
-    proj_carto_tagline: "Draw realistic maps, solo, layer by layer.",
+    proj_carto_tagline: "Step into a D&D cartographer's shoes and chart your world by hand.",
     proj_carto_short:
-      "A focused, solo map-drawing tool for crafting detailed, realistic fantasy maps you can export and share.",
+      "A simple, playful desktop tool that turns the D&D 5e Cartographer's Tools into a hands-on mapmaking game.",
     proj_carto_desc: [
-      "The Cartographer Tool is a solo map-making studio for players and game masters who love a beautiful map. It's designed as a digital companion to the physical Cartographer's tools many D&D 5e players already own.",
-      "Build worlds in layers — lay down terrain, carve coastlines and rivers, drop in settlements and labels, then refine until the map looks like it was pulled from an old atlas.",
-      "Annotations, a layered terrain system, and clean export options take you from blank canvas to table-ready handout, whether you're sketching a single dungeon or charting a whole continent.",
-      "Currently in beta, with the core drawing, layering, and export tools available now."
+      "The Cartographer Tool is a small, playful desktop app that brings the D&D 5e Cartographer's Tools to life. Instead of rolling a check, you step into the shoes of a character learning the craft — charting fantasy worlds by hand on an old parchment canvas.",
+      "Place icons from a big catalog — settlements, mountains, forests, castles, ports, dragon lairs and more — then paint terrain, sketch freehand with the pencil, link locations with labelled routes, and pin notes wherever your story needs them.",
+      "It's meant to be simple and fun, not a realistic professional atlas. A grid, a draggable scale bar and a measure tool let you think like an in-world cartographer — one square at a time — while the parchment background and hand-drawn icons keep everything feeling like a page torn from an adventurer's journal.",
+      "Pan, zoom and lean on the mini-map to roam a huge canvas, then save your map, export it to PNG, and undo or redo anything as you experiment. Currently in beta, with the full toolkit already available."
     ],
     proj_carto_features: [
-      "Layered terrain system for natural, realistic results",
-      "Coastlines, rivers, mountains, forests, and settlement tools",
-      "Text annotations and map labelling",
-      "Solo-focused, distraction-free drawing canvas",
-      "Export maps as images for print or virtual tabletops",
-      "A digital companion to physical Cartographer's tools"
+      "A big catalog of hand-drawn map icons — settlements, terrain, structures, water and special sites — grouped by category",
+      "Freehand terrain brush with forest, mountain, desert, swamp, water, snow, plains and lava fills",
+      "Pencil free-draw and eraser for sketching anything by hand",
+      "Labelled connections between locations, with dashed, dotted or solid line styles",
+      "Floating notes on any element, plus labels and renaming",
+      "Grid, a configurable scale (1 square = feet, meters, miles, km, leagues or days) and a two-point measure tool",
+      "A huge pannable, zoomable parchment canvas with a mini-map overview",
+      "Show/hide layers, full undo/redo, autosave, JSON save/load and PNG export"
     ]
   },
 
