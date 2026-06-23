@@ -27,6 +27,15 @@
      of the page. Used by "Back to projects" so it lands on the projects grid. */
   var pendingScroll = null;
 
+  /* Transient pointer bookkeeping for the lightbox image zoom/pan. There is only
+     ever one overlay on screen, so module-level state is safe — and it keeps the
+     (frequently-mutated) pointer maps out of Alpine's reactive object. Only
+     `lbZoom` (on the component) is reactive; it drives the CSS transform. */
+  var lbPointers = new Map();   // pointerId -> { x, y }
+  var lbPanStart = null;        // { px, py, x, y } baseline for single-pointer pan
+  var lbPinchStart = null;      // { dist, scale } baseline for two-pointer pinch
+  var lbDownInfo = null;        // { x, y, t, moved, pinched } for tap detection
+
   /* Parse window.location.hash into a normalised route object.
      "#projects/dnd-companion" -> { section: "projects", slug: "dnd-companion" }
      "#about"                  -> { section: "about",    slug: null }
@@ -138,6 +147,10 @@
            clicked. The overlay markup lives at the app root in index.html. */
         lightbox: { open: false, shots: [], index: 0 },
 
+        /* Pan/zoom state for the lightbox image. scale 1 = fit; x/y are screen-px
+           pan offsets. The only reactive zoom state (drives the CSS transform). */
+        lbZoom: { scale: 1, x: 0, y: 0 },
+
         /* The screenshot currently on display (or null when none). */
         get lightboxCurrent() {
           return this.lightbox.shots[this.lightbox.index] || null;
@@ -147,6 +160,7 @@
           this.lightbox.shots = Array.isArray(shots) ? shots : [];
           this.lightbox.index = index || 0;
           this.lightbox.open = true;
+          this.lbResetZoom();
           /* stop the page behind the overlay from scrolling */
           document.body.style.overflow = "hidden";
           /* move keyboard focus into the dialog */
@@ -157,18 +171,148 @@
 
         closeLightbox: function () {
           this.lightbox.open = false;
+          this.lbResetZoom();
           document.body.style.overflow = "";
         },
 
         lightboxNext: function () {
           if (!this.lightbox.open || this.lightbox.shots.length < 2) return;
           this.lightbox.index = (this.lightbox.index + 1) % this.lightbox.shots.length;
+          this.lbResetZoom();
         },
 
         lightboxPrev: function () {
           if (!this.lightbox.open || this.lightbox.shots.length < 2) return;
           var n = this.lightbox.shots.length;
           this.lightbox.index = (this.lightbox.index - 1 + n) % n;
+          this.lbResetZoom();
+        },
+
+        /* --- Lightbox image zoom & pan ----------------------------------- */
+        /* The image carries a CSS `transform: translate(x,y) scale(s)`. Because
+           translate is applied in screen pixels, all the maths below works
+           directly against the element's getBoundingClientRect(). */
+
+        /* CSS transform string bound to the image's :style. */
+        get lbTransform() {
+          var z = this.lbZoom;
+          return "translate(" + z.x + "px," + z.y + "px) scale(" + z.scale + ")";
+        },
+
+        /* Back to fit, centred, and drop any in-flight gesture. */
+        lbResetZoom: function () {
+          this.lbZoom.scale = 1;
+          this.lbZoom.x = 0;
+          this.lbZoom.y = 0;
+          lbPointers.clear();
+          lbPanStart = null;
+          lbPinchStart = null;
+          lbDownInfo = null;
+        },
+
+        /* Stop the scaled image from being panned entirely off-screen. */
+        lbClampPan: function () {
+          var img = this.$refs.lightboxImg;
+          if (!img) return;
+          var maxX = Math.max(0, (img.offsetWidth * this.lbZoom.scale - window.innerWidth) / 2 + 40);
+          var maxY = Math.max(0, (img.offsetHeight * this.lbZoom.scale - window.innerHeight) / 2 + 40);
+          this.lbZoom.x = Math.max(-maxX, Math.min(maxX, this.lbZoom.x));
+          this.lbZoom.y = Math.max(-maxY, Math.min(maxY, this.lbZoom.y));
+        },
+
+        /* Zoom to `newScale` while keeping the screen point (cx,cy) fixed. */
+        lbZoomAt: function (newScale, cx, cy) {
+          var img = this.$refs.lightboxImg;
+          if (!img) return;
+          newScale = Math.max(1, Math.min(6, newScale));
+          var rect = img.getBoundingClientRect();
+          if (rect.width > 0 && rect.height > 0) {
+            var ratio = newScale / this.lbZoom.scale;
+            var fx = (cx - rect.left) / rect.width;
+            var fy = (cy - rect.top) / rect.height;
+            this.lbZoom.x += fx * rect.width * (1 - ratio);
+            this.lbZoom.y += fy * rect.height * (1 - ratio);
+          }
+          this.lbZoom.scale = newScale;
+          if (newScale === 1) {
+            this.lbZoom.x = 0;
+            this.lbZoom.y = 0;
+          } else {
+            this.lbClampPan();
+          }
+        },
+
+        /* +/- buttons: zoom about the viewport centre. */
+        lbZoomBy: function (factor) {
+          this.lbZoomAt(this.lbZoom.scale * factor, window.innerWidth / 2, window.innerHeight / 2);
+        },
+
+        /* Wheel: zoom toward the cursor. */
+        lbWheel: function (e) {
+          var factor = e.deltaY < 0 ? 1.15 : 1 / 1.15;
+          this.lbZoomAt(this.lbZoom.scale * factor, e.clientX, e.clientY);
+        },
+
+        lbPointerDown: function (e) {
+          var img = this.$refs.lightboxImg;
+          if (img && img.setPointerCapture) {
+            try { img.setPointerCapture(e.pointerId); } catch (err) {}
+          }
+          lbPointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+          if (lbPointers.size === 1) {
+            lbPanStart = { px: e.clientX, py: e.clientY, x: this.lbZoom.x, y: this.lbZoom.y };
+            lbDownInfo = { x: e.clientX, y: e.clientY, t: Date.now(), moved: false, pinched: false };
+            lbPinchStart = null;
+          } else if (lbPointers.size === 2) {
+            var p = Array.from(lbPointers.values());
+            lbPinchStart = {
+              dist: Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y) || 1,
+              scale: this.lbZoom.scale
+            };
+            lbPanStart = null;
+            if (lbDownInfo) lbDownInfo.pinched = true;
+          }
+        },
+
+        lbPointerMove: function (e) {
+          if (!lbPointers.has(e.pointerId)) return;
+          lbPointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+          if (lbPointers.size >= 2 && lbPinchStart) {
+            var p = Array.from(lbPointers.values());
+            var dist = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y) || 1;
+            this.lbZoomAt(
+              lbPinchStart.scale * (dist / lbPinchStart.dist),
+              (p[0].x + p[1].x) / 2,
+              (p[0].y + p[1].y) / 2
+            );
+          } else if (lbPanStart) {
+            var dx = e.clientX - lbPanStart.px;
+            var dy = e.clientY - lbPanStart.py;
+            if (lbDownInfo && Math.hypot(dx, dy) > 6) lbDownInfo.moved = true;
+            if (this.lbZoom.scale > 1) {
+              this.lbZoom.x = lbPanStart.x + dx;
+              this.lbZoom.y = lbPanStart.y + dy;
+              this.lbClampPan();
+            }
+          }
+        },
+
+        lbPointerUp: function (e) {
+          lbPointers.delete(e.pointerId);
+          if (lbPointers.size < 2) lbPinchStart = null;
+          if (lbPointers.size === 1) {
+            var rem = Array.from(lbPointers.values())[0];
+            lbPanStart = { px: rem.x, py: rem.y, x: this.lbZoom.x, y: this.lbZoom.y };
+          } else if (lbPointers.size === 0) {
+            /* A clean tap (no drag, no pinch) toggles zoom at the tap point. */
+            if (lbDownInfo && !lbDownInfo.moved && !lbDownInfo.pinched &&
+                (Date.now() - lbDownInfo.t) < 400) {
+              if (this.lbZoom.scale > 1) this.lbResetZoom();
+              else this.lbZoomAt(2.5, lbDownInfo.x, lbDownInfo.y);
+            }
+            lbPanStart = null;
+            lbDownInfo = null;
+          }
         }
       };
     });

@@ -611,10 +611,17 @@
       </button>
 
       <figure class="lightbox__figure">
-        <img class="lightbox__img"
+        <img class="lightbox__img" x-ref="lightboxImg"
              :src="lightboxCurrent ? lightboxCurrent.src : ''"
-             :alt="lightboxCurrent ? (lightboxCurrent.alt || '') : ''" />
-        <figcaption class="lightbox__counter" x-show="lightbox.shots.length > 1">
+             :alt="lightboxCurrent ? (lightboxCurrent.alt || '') : ''"
+             :style="{ transform: lbTransform, cursor: lbZoom.scale > 1 ? 'grab' : 'zoom-in' }"
+             draggable="false"
+             @wheel.prevent="lbWheel($event)"
+             @pointerdown="lbPointerDown($event)"
+             @pointermove="lbPointerMove($event)"
+             @pointerup="lbPointerUp($event)"
+             @pointercancel="lbPointerUp($event)" />
+        <figcaption class="lightbox__counter" x-show="lightbox.shots.length > 1 && lbZoom.scale === 1">
           <span x-text="lightbox.index + 1"></span> / <span x-text="lightbox.shots.length"></span>
         </figcaption>
       </figure>
@@ -624,6 +631,18 @@
               :aria-label="t('lightbox_next')">
         <svg class="icon"><use href="#i-arrow-right" /></svg>
       </button>
+
+      <!-- Zoom controls (also: wheel / double-tap / pinch / drag-to-pan) -->
+      <div class="lightbox__zoom" @click.stop>
+        <button type="button" class="lightbox__zoombtn" @click="lbZoomBy(1 / 1.25)"
+                :aria-label="t('lightbox_zoom_out')">&minus;</button>
+        <span class="lightbox__zoomval" x-text="Math.round(lbZoom.scale * 100) + '%'"></span>
+        <button type="button" class="lightbox__zoombtn" @click="lbZoomBy(1.25)"
+                :aria-label="t('lightbox_zoom_in')">+</button>
+        <button type="button" class="lightbox__zoombtn lightbox__zoombtn--reset"
+                x-show="lbZoom.scale !== 1" @click="lbResetZoom()"
+                :aria-label="t('lightbox_zoom_reset')">1:1</button>
+      </div>
     </div>
   </div>
 

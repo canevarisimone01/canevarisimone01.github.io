@@ -1303,6 +1303,13 @@ strong {
   border-radius: var(--radius);
   border: 1px solid var(--border-strong);
   box-shadow: var(--shadow-lift);
+  /* zoom/pan: transform is set inline from lbZoom */
+  transform-origin: center center;
+  touch-action: none;        /* we handle pinch/pan ourselves */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  will-change: transform;
 }
 
 .lightbox__counter {
@@ -1347,6 +1354,60 @@ strong {
 
 .lightbox__nav--prev { left: clamp(0.6rem, 2vw, 1.6rem); }
 .lightbox__nav--next { right: clamp(0.6rem, 2vw, 1.6rem); }
+
+/* Zoom control bar — floats at the bottom-centre of the overlay */
+.lightbox__zoom {
+  position: absolute;
+  bottom: clamp(0.8rem, 2.5vw, 1.6rem);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(6px);
+}
+
+.lightbox__zoombtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.2rem;
+  height: 2.2rem;
+  padding: 0 0.5rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-strong);
+  color: var(--ink);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.lightbox__zoombtn--reset {
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+}
+
+.lightbox__zoombtn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--gold);
+  color: var(--gold-bright);
+}
+
+.lightbox__zoomval {
+  min-width: 3.2rem;
+  text-align: center;
+  color: var(--ink-muted);
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.03em;
+}
 
 /* Download */
 .download__buttons {

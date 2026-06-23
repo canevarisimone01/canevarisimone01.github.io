@@ -107,6 +107,9 @@ window.MODEVARI_I18N = {
     lightbox_close: "Close",
     lightbox_prev: "Previous",
     lightbox_next: "Next",
+    lightbox_zoom_in: "Zoom in",
+    lightbox_zoom_out: "Zoom out",
+    lightbox_zoom_reset: "Reset zoom",
     download_title: "Download",
     download_for: "Download for",
     version_label: "Version",
@@ -259,12 +262,15 @@ window.MODEVARI_I18N = {
     back_to_projects: "Torna ai progetti",
     detail_overview: "Panoramica",
     features_title: "Funzionalità",
-    screenshots_title: "Anteprima",
+    screenshots_title: "Esempi di mappe",
     screenshots_coming: "Screenshot in arrivo",
     screenshots_view: "Apri screenshot",
     lightbox_close: "Chiudi",
     lightbox_prev: "Precedente",
     lightbox_next: "Successivo",
+    lightbox_zoom_in: "Ingrandisci",
+    lightbox_zoom_out: "Riduci",
+    lightbox_zoom_reset: "Reimposta zoom",
     download_title: "Download",
     download_for: "Scarica per",
     version_label: "Versione",
@@ -324,22 +330,24 @@ window.MODEVARI_I18N = {
 
     /* Cartographer Tool */
     proj_carto_name: "Cartographer Tool",
-    proj_carto_tagline: "Disegna mappe realistiche, in solitaria, strato dopo strato.",
+    proj_carto_tagline: "Vesti i panni di un cartografo di D&D e traccia il tuo mondo a mano.",
     proj_carto_short:
-      "Uno strumento di disegno mappe in solitaria, essenziale, per creare mappe fantasy dettagliate e realistiche da esportare e condividere.",
+      "Un'app di cartografia pratica che dà vita agli Strumenti da Cartografo di D&D 5e, su desktop e tablet Android.",
     proj_carto_desc: [
-      "Cartographer Tool è uno studio di cartografia in solitaria per giocatori e master che amano una bella mappa. È pensato come compagno digitale degli strumenti del cartografo fisici che molti giocatori di D&D 5e già possiedono.",
-      "Costruisci mondi a strati — stendi il terreno, traccia coste e fiumi, aggiungi insediamenti ed etichette, poi rifinisci finché la mappa non sembra uscita da un vecchio atlante.",
-      "Annotazioni, un sistema di terreno a livelli e opzioni di esportazione pulite ti portano dalla tela bianca all'handout pronto per il tavolo, che tu stia abbozzando un singolo dungeon o tracciando un intero continente.",
-      "Attualmente in beta, con gli strumenti principali di disegno, livelli ed esportazione già disponibili."
+      "Cartographer Tool mette nelle tue mani gli Strumenti da Cartografo di D&D 5e. Oltre a tirare la prova, sei tu a occuparti del mestiere — tracciando mondi fantasy a mano su un'antica tela di pergamena, proprio come farebbe il tuo personaggio.",
+      "Posiziona icone da un ricco catalogo — insediamenti, montagne, foreste, castelli, porti, tane di drago e altro ancora — poi traccia le aree di terreno, disegna a mano libera con la matita, collega i luoghi con percorsi etichettati e fissa note ovunque la tua storia ne abbia bisogno.",
+      "È costruito attorno al gusto del mestiere più che al realismo tecnico: non una suite professionale per atlanti, ma uno spazio dedicato per tracciare un mondo a mano. Una griglia, una barra di scala trascinabile e uno strumento di misura ti fanno ragionare come un cartografo nel mondo di gioco — un quadretto alla volta — mentre lo sfondo di pergamena e le icone in stile inchiostro fanno sembrare tutto una pagina del diario di un avventuriero.",
+      "Scorri, ingrandisci e affidati alla mini-mappa per muoverti su una tela enorme, poi salva il tuo lavoro, esportalo in PNG e annulla o ripeti le azioni liberamente mentre procedi. Funziona su Windows e Linux oltre che su Android — al meglio su tablet, dove disegni direttamente sulla mappa. Attualmente in beta, con l'intero set di strumenti già disponibile."
     ],
     proj_carto_features: [
-      "Sistema di terreno a livelli per risultati naturali e realistici",
-      "Strumenti per coste, fiumi, montagne, foreste e insediamenti",
-      "Annotazioni testuali ed etichettatura della mappa",
-      "Tela di disegno in solitaria, senza distrazioni",
-      "Esporta le mappe come immagini per la stampa o i tavoli virtuali",
-      "Un compagno digitale degli strumenti del cartografo fisici"
+      "Un ampio catalogo di icone per mappe — insediamenti, terreni, strutture, acque e luoghi speciali — raggruppate per categoria",
+      "Disegna aree di terreno chiuse a mano libera — riempimenti di foresta, montagna, deserto, palude, acqua, neve, pianura e lava",
+      "Disegno a mano libera con matita e gomma per schizzare qualsiasi cosa a mano",
+      "Collegamenti etichettati tra i luoghi, con stili di linea tratteggiata, punteggiata o continua",
+      "Note fluttuanti su qualsiasi elemento, con etichette e rinomina",
+      "Griglia, una scala configurabile (1 quadretto = piedi, metri, miglia, km, leghe o giorni) e uno strumento di misura a due punti",
+      "Un'enorme tela di pergamena, navigabile e ingrandibile, con panoramica tramite mini-mappa",
+      "Mostra/nascondi i livelli, annulla/ripeti completi, salvataggio automatico, salvataggio/caricamento JSON ed esportazione PNG"
     ]
   }
 };
