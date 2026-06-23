@@ -35,6 +35,7 @@
   var lbPanStart = null;        // { px, py, x, y } baseline for single-pointer pan
   var lbPinchStart = null;      // { dist, scale } baseline for two-pointer pinch
   var lbDownInfo = null;        // { x, y, t, moved, pinched } for tap detection
+  var lbHiResFor = -1;          // shot index whose hi-res image has been requested
 
   /* Parse window.location.hash into a normalised route object.
      "#projects/dnd-companion" -> { section: "projects", slug: "dnd-companion" }
@@ -151,6 +152,10 @@
            pan offsets. The only reactive zoom state (drives the CSS transform). */
         lbZoom: { scale: 1, x: 0, y: 0 },
 
+        /* URL currently shown in the lightbox. Starts as the light image, then is
+           swapped to the high-res `full` once it loads on the first zoom. */
+        lbSrc: "",
+
         /* The screenshot currently on display (or null when none). */
         get lightboxCurrent() {
           return this.lightbox.shots[this.lightbox.index] || null;
@@ -161,6 +166,7 @@
           this.lightbox.index = index || 0;
           this.lightbox.open = true;
           this.lbResetZoom();
+          this.lbSetShot();
           /* stop the page behind the overlay from scrolling */
           document.body.style.overflow = "hidden";
           /* move keyboard focus into the dialog */
@@ -179,6 +185,7 @@
           if (!this.lightbox.open || this.lightbox.shots.length < 2) return;
           this.lightbox.index = (this.lightbox.index + 1) % this.lightbox.shots.length;
           this.lbResetZoom();
+          this.lbSetShot();
         },
 
         lightboxPrev: function () {
@@ -186,6 +193,31 @@
           var n = this.lightbox.shots.length;
           this.lightbox.index = (this.lightbox.index - 1 + n) % n;
           this.lbResetZoom();
+          this.lbSetShot();
+        },
+
+        /* Show the light/fast image for the current shot and re-arm hi-res. */
+        lbSetShot: function () {
+          var cur = this.lightboxCurrent;
+          this.lbSrc = cur ? cur.src : "";
+          lbHiResFor = -1;
+        },
+
+        /* Load the high-res `full` image on demand (first zoom) and swap it in
+           once downloaded — but only if we're still on the same shot. The browser
+           caches it, so the swap is instant and flicker-free. */
+        lbRequestHiRes: function () {
+          var cur = this.lightboxCurrent;
+          if (!cur || !cur.full) return;
+          var idx = this.lightbox.index;
+          if (lbHiResFor === idx) return;
+          lbHiResFor = idx;
+          var self = this;
+          var hi = new Image();
+          hi.onload = function () {
+            if (self.lightbox.open && self.lightbox.index === idx) self.lbSrc = cur.full;
+          };
+          hi.src = cur.full;
         },
 
         /* --- Lightbox image zoom & pan ----------------------------------- */
@@ -225,6 +257,7 @@
           var img = this.$refs.lightboxImg;
           if (!img) return;
           newScale = Math.max(1, Math.min(6, newScale));
+          if (newScale > 1) this.lbRequestHiRes();
           var rect = img.getBoundingClientRect();
           if (rect.width > 0 && rect.height > 0) {
             var ratio = newScale / this.lbZoom.scale;

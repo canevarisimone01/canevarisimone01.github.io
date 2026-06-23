@@ -109,12 +109,15 @@ window.MODEVARI_CONFIG = {
         { name: "Android", ext: ".apk", file: "cartographers-companion.apk" }
       ],
       /* Preview images for the detail page (clickable -> open in the lightbox).
-         Each `src` must match a real file in assets/screenshots/cartographer/.
-         Omit this array (or leave it empty) to keep the "coming soon" placeholders. */
+         `src`  = light, fast image used for the thumbnail + initial fit view.
+         `full` = optional high-resolution version, loaded on demand only when the
+                  image is zoomed in the lightbox (keeps page load fast while still
+                  giving crisp detail when you zoom). Both must be real files in
+                  assets/screenshots/cartographer/. */
       screenshots: [
-        { src: "assets/screenshots/cartographer/large_map.jpg", alt: "Cartographer Tool — large detailed map" },
-        { src: "assets/screenshots/cartographer/medium_map.jpg", alt: "Cartographer Tool — medium map" },
-        { src: "assets/screenshots/cartographer/small_map.jpg", alt: "Cartographer Tool — small map" }
+        { src: "assets/screenshots/cartographer/large_map.jpg", full: "assets/screenshots/cartographer/large_map.full.jpg", alt: "Cartographer Tool — large detailed map" },
+        { src: "assets/screenshots/cartographer/medium_map.jpg", full: "assets/screenshots/cartographer/medium_map.full.jpg", alt: "Cartographer Tool — medium map" },
+        { src: "assets/screenshots/cartographer/small_map.jpg", full: "assets/screenshots/cartographer/small_map.full.jpg", alt: "Cartographer Tool — small map" }
       ]
     }
   ],

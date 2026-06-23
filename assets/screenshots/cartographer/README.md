@@ -1,26 +1,31 @@
 # Cartographer Tool — screenshots
 
-The preview images for the Cartographer Tool live here. Currently:
+Two images per map, a light one and a high-res one:
 
-- `large_map.jpg`
-- `medium_map.jpg`
-- `small_map.jpg`
+| File | Role | Size |
+|------|------|------|
+| `large_map.jpg` / `medium_map.jpg` / `small_map.jpg` | Thumbnail + initial fit view (loads with the page) | ~300–420 KB, 2048px |
+| `large_map.full.jpg` / `medium_map.full.jpg` / `small_map.full.jpg` | High-res, loaded **only when you zoom** in the lightbox | ~1.4–1.9 MB, 4096px |
 
 These are wired into the site by the `screenshots` array of the `cartographer`
-project in `config.js` — each `src` must match a filename in this folder exactly
-(GitHub Pages is case-sensitive). They appear in the **Preview** section of the
-project page and open in a click-to-enlarge lightbox.
+project in `config.js` — each entry is `{ src, full, alt }`:
 
-**Keep them web-sized.** The originals were 4096×4096 PNGs (~11 MB each), which
-made the page load painfully slowly. They've been downscaled to 2048px on the
-long edge and saved as JPEG (quality 85), which is ~96% smaller with no visible
-quality loss. The full-resolution masters are kept outside the repo in
-`landing_page/_screenshot_originals/`. Rule of thumb: a screenshot should be
-well under ~500 KB. Resize/recompress before committing.
+- `src`  → the light image (thumbnail + first view). **Required.**
+- `full` → the high-res image, fetched on demand the first time the image is
+  zoomed, then swapped in for crisp detail. **Optional** (omit to just zoom the
+  light image). 
+- `alt`  → descriptive alt text for accessibility.
 
-To change how many there are, or to use different filenames, just edit that
-`screenshots` array — each entry is `{ src, alt }`. Keep `alt` descriptive for
-accessibility. PNG/JPG/WebP all work; update the `src` extension to match.
+Filenames must match exactly — **GitHub Pages is case-sensitive** (`Large_Map.JPG`
+≠ `large_map.jpg`), unlike Windows. They appear in the **Map examples** section of
+the project page and open in a click-to-enlarge, zoomable lightbox.
 
-You can delete this README once the images are in place — it's only here to
-document the folder.
+**Why two tiers?** The originals were 4096×4096 PNGs (~11 MB each), which made the
+page crawl. The light `.jpg` (2048px, quality 85) keeps the page fast; the
+`.full.jpg` (4096px, quality 92, ~1/7 the size of the PNG) is only ever downloaded
+when someone actually zooms a single image, so it doesn't affect page load. The
+full-resolution PNG masters are kept outside the repo in
+`landing_page/_screenshot_originals/`.
+
+Rule of thumb when adding images: light tier well under ~500 KB, high-res tier a
+couple of MB at most. Resize/recompress before committing.

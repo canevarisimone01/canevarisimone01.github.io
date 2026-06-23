@@ -612,7 +612,7 @@
 
       <figure class="lightbox__figure">
         <img class="lightbox__img" x-ref="lightboxImg"
-             :src="lightboxCurrent ? lightboxCurrent.src : ''"
+             :src="lbSrc"
              :alt="lightboxCurrent ? (lightboxCurrent.alt || '') : ''"
              :style="{ transform: lbTransform, cursor: lbZoom.scale > 1 ? 'grab' : 'zoom-in' }"
              draggable="false"
