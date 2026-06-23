@@ -170,7 +170,7 @@ window.MODEVARI_I18N = {
     proj_carto_short:
       "A hands-on mapmaking app that brings the D&D 5e Cartographer's Tools to life on desktop and Android tablets.",
     proj_carto_desc: [
-      "The Cartographer Tool puts the D&D 5e Cartographer's Tools in your hands. Instead of rolling a check, you take on the craft yourself — charting fantasy worlds by hand on an old parchment canvas, the way your character would.",
+      "The Cartographer Tool puts the D&D 5e Cartographer's Tools in your hands. Alongside rolling the check, you take on the craft yourself — charting fantasy worlds by hand on an old parchment canvas, the way your character would.",
       "Place icons from a deep catalog — settlements, mountains, forests, castles, ports, dragon lairs and more — then paint terrain, sketch freehand with the pencil, link locations with labelled routes, and pin notes wherever your story needs them.",
       "It's built around the feel of the craft rather than technical realism: not a professional atlas suite, but a focused space to chart a world by hand. A grid, a draggable scale bar and a measure tool let you think like an in-world cartographer — one square at a time — while the parchment background and hand-drawn icons keep everything feeling like a page from an adventurer's journal.",
       "Pan, zoom and lean on the mini-map to roam a huge canvas, then save your work, export it to PNG, and undo or redo freely as you go. It runs on Windows and Linux as well as Android — at its best on a tablet, where you draw straight onto the map. Currently in beta, with the full toolkit already available."
