@@ -196,11 +196,15 @@
           this.lbSetShot();
         },
 
-        /* Show the light/fast image for the current shot and re-arm hi-res. */
+        /* Show the light/fast image for the current shot, then immediately begin
+           upgrading to the high-res version so an opened map is sharp right away
+           (and instantly crisp when zoomed). The light image displays first and
+           the hi-res swaps in as soon as it has downloaded. */
         lbSetShot: function () {
           var cur = this.lightboxCurrent;
           this.lbSrc = cur ? cur.src : "";
           lbHiResFor = -1;
+          this.lbRequestHiRes();
         },
 
         /* Load the high-res `full` image on demand (first zoom) and swap it in
