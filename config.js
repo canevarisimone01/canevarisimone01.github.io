@@ -115,9 +115,9 @@ window.MODEVARI_CONFIG = {
                   giving crisp detail when you zoom). Both must be real files in
                   assets/screenshots/cartographer/. */
       screenshots: [
-        { src: "assets/screenshots/cartographer/large_map.jpg", full: "assets/screenshots/cartographer/large_map.full.jpg", alt: "Cartographer Tool — large detailed map" },
-        { src: "assets/screenshots/cartographer/medium_map.jpg", full: "assets/screenshots/cartographer/medium_map.full.jpg", alt: "Cartographer Tool — medium map" },
-        { src: "assets/screenshots/cartographer/small_map.jpg", full: "assets/screenshots/cartographer/small_map.full.jpg", alt: "Cartographer Tool — small map" }
+        { src: "assets/screenshots/cartographer/large_map.jpg", full: "assets/screenshots/cartographer/large_map.full.png", alt: "Cartographer Tool — large detailed map" },
+        { src: "assets/screenshots/cartographer/medium_map.jpg", full: "assets/screenshots/cartographer/medium_map.full.png", alt: "Cartographer Tool — medium map" },
+        { src: "assets/screenshots/cartographer/small_map.jpg", full: "assets/screenshots/cartographer/small_map.full.png", alt: "Cartographer Tool — small map" }
       ]
     }
   ],
