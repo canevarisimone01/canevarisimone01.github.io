@@ -1309,7 +1309,10 @@ strong {
   user-select: none;
   -webkit-user-select: none;
   -webkit-user-drag: none;
-  will-change: transform;
+  /* NOTE: do NOT add `will-change: transform` here. It promotes the image to a
+     GPU layer rasterised at its ~1100px fit size, so `transform: scale()` then
+     upscales that low-res texture and zoom looks blurry. Leaving it off lets the
+     browser re-rasterise from the full 4096px source, keeping zoom crisp. */
 }
 
 .lightbox__counter {
