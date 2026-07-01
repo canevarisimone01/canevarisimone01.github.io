@@ -99,8 +99,8 @@ window.MODEVARI_CONFIG = {
       accent: "#d68a52",                     // rust
       accentSoft: "#e9c79a",                 // parchment / sepia
       status: "beta",
-      version: "v0.1-beta",
-      releaseDate: "2026-06-16",
+      version: "v0.2-beta",
+      releaseDate: "2026-07-01",
       changelogUrl: "https://github.com/canevarisimone01/cartographer-s_tool/releases",
       // Each `file` must EXACTLY match an asset name on the latest GitHub release.
       platforms: [
